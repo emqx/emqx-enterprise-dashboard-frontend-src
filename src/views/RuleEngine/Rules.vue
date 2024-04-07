@@ -116,7 +116,7 @@
             </el-button>
           </div>
 
-          <el-table v-bind="rulesTable" :data="tableData" class="data-list">
+          <el-table v-bind="rulesTable" :data="tableData" class="data-list" @filter-change="handleFilter">
             <el-table-column type="index" width="50" label=" "> </el-table-column>
             <el-table-column prop="id" label="ID">
               <template slot-scope="{ row }">
@@ -170,10 +170,10 @@
             <el-table-column
               prop="actions"
               :filters="filterOptions.actions"
-              :filter-method="actionsColumnFilter"
               filter-placement="bottom"
               :formatter="actionsFormatter"
               :label="$t('RuleEngine.responseAction')"
+              column-key="filters"
             >
             </el-table-column>
             <el-table-column width="200px" prop="id">
@@ -336,6 +336,7 @@
 </template>
 
 <script>
+import { chunk } from 'lodash'
 import {
   loadRules,
   loadRuleDetails,
@@ -457,12 +458,22 @@ export default {
         _limit: 10,
         _page: 1,
       },
+      tableFilters: [],
       hasnext: false,
       rulesCount: 0,
       showMoreQuery: false,
       filterParams: createRawFilterParams(),
       keyForSearchTopic: KEYS_FOR_SEARCH_TOPIC[0].value,
+
+      /* self paging */
+      totalData: [],
+      dataChunks: [],
     }
+  },
+  computed: {
+    isPageBySelf() {
+      return this.tableFilters.length > 0
+    },
   },
 
   async created() {
@@ -481,6 +492,9 @@ export default {
         })
         .then(async () => {
           await destroyRule(row.id)
+          if (this.tableData.length === 1 && this.pageParams._page > 1) {
+            this.pageParams._page -= 1
+          }
           this.loadData()
           this.$message.success(this.$t('Base.deleteSuccess'))
         })
@@ -489,10 +503,6 @@ export default {
 
     forColumnFilter(value, row) {
       return (row.for || []).includes(value)
-    },
-
-    actionsColumnFilter(value, row) {
-      return (row.actions || []).find(($) => $.name === value)
     },
 
     getFilterParams() {
@@ -510,8 +520,38 @@ export default {
       return ret
     },
 
+    /**
+     * Here is the front-end paging function to get data(for table filter)
+     */
+    async loadAndPageData() {
+      try {
+        const filterParams = this.getFilterParams()
+        const { _page } = this.pageParams
+        const params = { _limit: 1000000, _page: 1, ...filterParams }
+        const { items, meta } = await loadRules(params)
+        items.forEach((rule) => {
+          rule.actions.forEach((action) => {
+            action._name = this.actionsMap[action.name]
+          })
+        })
+        this.totalData = items.filter((row) => {
+          return (row.actions || []).find(($) => this.tableFilters.includes($.name))
+        })
+        this.dataChunks = chunk(this.totalData, this.pageParams._limit)
+        this.rulesCount = meta.count < 0 ? meta.count : this.totalData.length
+        this.tableData = this.dataChunks[_page - 1]
+        this.hasnext = this.dataChunks[_page] && this.dataChunks[_page].length > 0
+      } catch (error) {
+        //
+      }
+    },
+
     async loadData() {
       try {
+        if (this.isPageBySelf) {
+          this.loadAndPageData()
+          return
+        }
         const params = { ...this.pageParams, ...this.getFilterParams() }
         const { items, meta } = await loadRules(params)
         items.forEach((rule) => {
@@ -621,6 +661,12 @@ export default {
     },
     copyRule({ id }) {
       this.$router.push({ name: 'rules-create', query: { command: 'copy', rule: id } })
+    },
+
+    handleFilter({ filters }) {
+      this.resetPageNo()
+      this.tableFilters = filters
+      this.loadData()
     },
   },
 }
