@@ -53,7 +53,7 @@
       "zh": "License"
     },
     "auth_clientid": {
-      "en": "认证",
+      "en": "Access Control",
       "zh": "访问控制"
     },
     "auth_username": {
@@ -279,7 +279,7 @@
       "zh": "添加认证凭证(用户名)"
     },
     "update_username": {
-      "en": "更新 Auth Credentials(Username)",
+      "en": "Update Auth Credentials(Username)",
       "zh": "更新认证凭证(用户名)"
     },
     "add": {
