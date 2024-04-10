@@ -267,19 +267,19 @@
       "zh": "设置动态 License "
     },
     "add_clientid": {
-      "en": "Add ACL(ClientID)",
-      "zh": "添加 ACL(客户端 ID)"
+      "en": "Add Auth Credential(ClientID)",
+      "zh": "添加认证凭证(客户端 ID)"
     },
     "update_clientid": {
-      "en": "Update Auth Credentials(ClientID)",
+      "en": "Update Auth Credential(ClientID)",
       "zh": "更新认证凭证(客户端 ID)"
     },
     "add_username": {
-      "en": "Add Auth Credentials(Username)",
+      "en": "Add Auth Credential(Username)",
       "zh": "添加认证凭证(用户名)"
     },
     "update_username": {
-      "en": "Update Auth Credentials(Username)",
+      "en": "Update Auth Credential(Username)",
       "zh": "更新认证凭证(用户名)"
     },
     "add": {
