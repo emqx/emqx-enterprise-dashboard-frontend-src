@@ -456,6 +456,23 @@ export default {
         })
       }
     },
+    assignValuesToRecord(form) {
+      const record = _.cloneDeep(this.moduleData)
+      const { config: configVal } = record
+      Object.keys(configVal).forEach((key) => {
+        const value = configVal[key]
+        this.$set(this.record.config, key, value)
+      })
+      form.forEach(({ key, value }) => {
+        /**
+         * value is configured values merged with default values (can't understand🤦🏻‍♀️)
+         */
+        const recordValue = _.get(this.record.config, key)
+        if (recordValue === undefined && value !== undefined) {
+          this.$set(this.record.config, key, value)
+        }
+      })
+    },
     loadConfigList(params) {
       const { listener, ...paramsData } = params
       if (listener) {
@@ -470,9 +487,13 @@ export default {
       }
       this.rules.config = rules
       this.record.config = {}
-      form.forEach(({ key, value }) => {
-        this.$set(this.record.config, key, value)
-      })
+      if (this.oper === 'edit') {
+        this.assignValuesToRecord(form)
+      } else {
+        form.forEach(({ key, value }) => {
+          this.$set(this.record.config, key, value)
+        })
+      }
       this.initListeners()
       this.storeOriginData(configData)
       this.configLoading = false
