@@ -518,4 +518,8 @@ export default {
     zh: '审计日志功能可以记录对 EMQX 集群的关键操作，以满足企业在合规性和数据安全方面的需求。',
     en: 'The audit log feature records critical operations on the EMQX cluster to meet enterprise requirements for compliance and data security.',
   },
+  logTraceDesc: {
+    zh: '指定过滤条件实时输出 DEBUG 级别日志，用于调试和排查错误。',
+    en: 'Specify filter conditions to output DEBUG level logs in real-time for debugging and troubleshooting.',
+  },
 }

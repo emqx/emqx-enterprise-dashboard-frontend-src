@@ -60,11 +60,6 @@
               <slow-query v-if="detailTabs === 'subscribers'"></slow-query>
             </el-tab-pane>
           </template>
-          <template v-else-if="moduleData.type == 'tracer'">
-            <el-tab-pane ref="moduleSpecialTab" :label="$t('Modules.trace')" :name="specialModuleDefaultTabName">
-              <log-trace v-if="detailTabs === 'trace'"></log-trace>
-            </el-tab-pane>
-          </template>
           <template v-else-if="moduleData.type == 'gcp_device'">
             <el-tab-pane
               ref="moduleSpecialTab"
@@ -259,7 +254,6 @@ import GCPIoT from './components/GCPIoT/GCPIoT.vue'
 import TLSVersionSelect from '@/components/TLSVersionSelect.vue'
 import BinaryFileEditor from '@/components/BinaryFileEditor.vue'
 
-import LogTrace from './components/LogTrace/LogTrace'
 import Listeners from './components/Listeners'
 
 export default {
@@ -278,7 +272,6 @@ export default {
     LwClients,
     TopicMetrics,
     SlowQuery,
-    LogTrace,
     TLSVersionSelect,
     GCPIoT,
     BinaryFileEditor,
