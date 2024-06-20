@@ -172,8 +172,8 @@ export default {
     en: 'Modules Select',
   },
   trace: {
-    zh: '在线 Trace',
-    en: 'Online Trace',
+    zh: '日志追踪',
+    en: 'Trace',
   },
   log: {
     zh: '审计日志',
