@@ -89,15 +89,20 @@ export default {
         }
         this.addLoading = true
         const { ...data } = this.record
-        const res = await addAcl(data)
-        if (res.result === 'ok') {
-          this.$message.success(this.$t('Base.createSuccess'))
-          this.$emit('added')
-          this.showDialog = false
+        try {
+          const res = await addAcl(data)
+          if (res.result === 'ok') {
+            this.$message.success(this.$t('Base.createSuccess'))
+            this.$emit('added')
+            this.showDialog = false
+          }
+        } catch (error) {
+          //
+        } finally {
+          setTimeout(() => {
+            this.addLoading = false
+          }, 200)
         }
-        setTimeout(() => {
-          this.addLoading = false
-        }, 200)
       })
     },
   },
