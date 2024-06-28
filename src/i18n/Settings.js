@@ -450,6 +450,14 @@ export default {
     EMQX will trigger an alarm when the percentage of system
     memory allocated by EMQX for all processes exceeds this value`,
   },
+  process_alarm_top_n: {
+    zh: '当触发 "vm_mon.process_long_msgq" 配置的条件时，也在告警消息中包含消息队列最长的前 N 个进程。',
+    en: 'When the condition configured by "vm_mon.process_long_msgq" is triggered, also include the top N processes with the longest message queues in the alarm message.',
+  },
+  process_long_msgq: {
+    zh: '当系统中某个进程的消息邮箱长度超过指定值时，发出告警。',
+    en: 'Issue an alarm when the message mailbox length of a process in the system exceeds a specified value.',
+  },
   // monitorAlarm desciption end
   listenerName: {
     zh: '监听器名字',
