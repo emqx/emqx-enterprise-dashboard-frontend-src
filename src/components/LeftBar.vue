@@ -1,43 +1,45 @@
 <template>
   <div class="left-bar" :style="{ width: leftBarCollapse ? '80px' : '200px' }">
-    <div class="logo" :style="{ paddingLeft: leftBarCollapse ? '6px' : '20px' }">
-      <transition name="logo-transform" mode="out-in">
-        <img class="logo-img" v-if="!leftBarCollapse" src="../assets/emqx_logo.png" alt="logo" />
-      </transition>
-      <transition name="logo-transform" mode="out-in">
-        <img class="logo-img-fold" v-if="leftBarCollapse" src="../assets/emqx_logo_fold.png" alt="logo" />
-      </transition>
-    </div>
+    <el-scrollbar>
+      <div class="logo" :style="{ paddingLeft: leftBarCollapse ? '6px' : '20px' }">
+        <transition name="logo-transform" mode="out-in">
+          <img class="logo-img" v-if="!leftBarCollapse" src="../assets/emqx_logo.png" alt="logo" />
+        </transition>
+        <transition name="logo-transform" mode="out-in">
+          <img class="logo-img-fold" v-if="leftBarCollapse" src="../assets/emqx_logo_fold.png" alt="logo" />
+        </transition>
+      </div>
 
-    <a-menu
-      class="menu-wrapper"
-      :default-selected-keys="defaultSelectedKeys"
-      :selected-keys="defaultSelectedKeys"
-      :open-keys.sync="defaultOpenKeys"
-      mode="inline"
-      theme="dark"
-      :inline-collapsed="leftBarCollapse"
-      @click="handleClick"
-    >
-      <template v-for="item in menus">
-        <template v-if="$hasShow(item.key)">
-          <a-sub-menu v-if="item.children && item.children.length > 0" :key="item.key" @titleClick="titleClick(item)">
-            <span slot="title">
+      <a-menu
+        class="menu-wrapper"
+        :default-selected-keys="defaultSelectedKeys"
+        :selected-keys="defaultSelectedKeys"
+        :open-keys.sync="defaultOpenKeys"
+        mode="inline"
+        theme="dark"
+        :inline-collapsed="leftBarCollapse"
+        @click="handleClick"
+      >
+        <template v-for="item in menus">
+          <template v-if="$hasShow(item.key)">
+            <a-sub-menu v-if="item.children && item.children.length > 0" :key="item.key" @titleClick="titleClick(item)">
+              <span slot="title">
+                <icon-font :type="item.icon"></icon-font>
+                <span>{{ item.title }}</span>
+              </span>
+              <template v-for="item2 in item.children">
+                <a-menu-item v-if="$hasShow(item2.key)" :key="item2.path">{{ item2.title }}</a-menu-item>
+              </template>
+            </a-sub-menu>
+
+            <a-menu-item v-else-if="!item.children && $hasShow(item.key)" :key="item.path">
               <icon-font :type="item.icon"></icon-font>
               <span>{{ item.title }}</span>
-            </span>
-            <template v-for="item2 in item.children">
-              <a-menu-item v-if="$hasShow(item2.key)" :key="item2.path">{{ item2.title }}</a-menu-item>
-            </template>
-          </a-sub-menu>
-
-          <a-menu-item v-else-if="!item.children && $hasShow(item.key)" :key="item.path">
-            <icon-font :type="item.icon"></icon-font>
-            <span>{{ item.title }}</span>
-          </a-menu-item>
+            </a-menu-item>
+          </template>
         </template>
-      </template>
-    </a-menu>
+      </a-menu>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -260,9 +262,12 @@ export default {
 
 .left-bar {
   $logo-height: 50px;
-  min-height: calc(100vh - #{$logo-height});
+  height: calc(100vh - #{$logo-height});
   background-color: $color-theme;
   transition: all 0.3s;
+  .el-scrollbar {
+    height: 100%;
+  }
 
   .menu-wrapper {
     margin-top: $logo-height;
