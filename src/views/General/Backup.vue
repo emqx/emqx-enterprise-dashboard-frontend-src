@@ -42,9 +42,15 @@
           </el-table-column>
           <el-table-column prop="created_at" :label="$t('Backup.createAt')"></el-table-column>
           <el-table-column width="250px">
-            <template slot-scope="{ row }">
+            <template slot-scope="{ row, $index }">
               <el-button type="dashed" size="mini" @click="handleDownload(row)">{{ $t('Backup.download') }} </el-button>
-              <el-button type="dashed" size="mini" :disabled="notAbleChange" @click="handleRestore(row)">
+              <el-button
+                type="dashed"
+                size="mini"
+                :disabled="notAbleChange"
+                :loading="rowLoadingStatus[$index]"
+                @click="handleRestore(row, $index)"
+              >
                 {{ $t('Backup.restore') }}
               </el-button>
               <el-button type="dashed danger" size="mini" :disabled="notAbleChange" @click="deleteConfirm(row)">
@@ -59,6 +65,7 @@
 </template>
 
 <script>
+import { isUndefined } from 'lodash'
 import { loadBackup, exportBackup, deleteBackup, downloadFile, importBackup, uploadBackupFile } from '@/api/backup'
 
 export default {
@@ -87,6 +94,7 @@ export default {
     return {
       fileList: [],
       tableData: [],
+      rowLoadingStatus: {},
     }
   },
 
@@ -96,7 +104,12 @@ export default {
 
   methods: {
     async loadData() {
-      this.tableData = await loadBackup()
+      try {
+        this.tableData = await loadBackup()
+        return Promise.resolve()
+      } catch (error) {
+        return Promise.reject()
+      }
     },
     async handleExport() {
       const res = await exportBackup()
@@ -119,11 +132,23 @@ export default {
         URL.revokeObjectURL(blob)
       }
     },
-    async handleRestore(row) {
-      const { filename, node } = row
-      const res = await importBackup({ filename, node })
-      if (res) {
-        this.$message.success(this.$t('Backup.restoreSuccess'))
+    setLoadingStatus(index, value) {
+      if (!isUndefined(index)) {
+        this.$set(this.rowLoadingStatus, index, value)
+      }
+    },
+    async handleRestore(row, index) {
+      try {
+        this.setLoadingStatus(index, true)
+        const { filename, node } = row
+        const res = await importBackup({ filename, node })
+        if (res) {
+          this.$message.success(this.$t('Backup.restoreSuccess'))
+        }
+      } catch (error) {
+        //
+      } finally {
+        this.setLoadingStatus(index, false)
       }
     },
     deleteConfirm(row) {
@@ -159,8 +184,9 @@ export default {
         const res = await uploadBackupFile(uploadData)
         const { node } = res.data
         if (res) {
-          this.handleRestore({ filename: file.name, node })
-          this.loadData()
+          await this.loadData()
+          const rowIndex = this.tableData.findIndex((item) => item.node === node && item.filename === file.name)
+          this.handleRestore({ filename: file.name, node }, rowIndex)
           this.$refs.upload.clearFiles()
         }
       }
