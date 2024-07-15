@@ -17,11 +17,11 @@ export function downloadFile(filename) {
 }
 
 export function uploadBackupFile(data) {
-  return http.post('/data/file', data)
+  return http.post('/data/file', data, { timeout: 0 })
 }
 
 export function importBackup(body) {
-  return http.post('/data/import', body)
+  return http.post('/data/import', body, { timeout: 0 })
 }
 
 export default {}
