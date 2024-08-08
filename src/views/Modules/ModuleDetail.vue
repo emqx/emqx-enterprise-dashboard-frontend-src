@@ -69,6 +69,11 @@
               <GCPIoT v-if="detailTabs === 'devices'" />
             </el-tab-pane>
           </template>
+          <template v-else-if="moduleData.type == 'username_quota'">
+            <el-tab-pane ref="moduleSpecialTab" :label="$t('Modules.usage')" :name="specialModuleDefaultTabName">
+              <UsernameQuota v-if="detailTabs === 'usage'" />
+            </el-tab-pane>
+          </template>
         </template>
         <el-tab-pane :label="$t('Modules.configuration')" name="configuration">
           <!-- <div class="emq-title module-title">
@@ -251,9 +256,9 @@ import LwClients from './components/Lwm2mProtocol/LwClients'
 import TopicMetrics from './components/TopicMetrics/TopicMetrics'
 import SlowQuery from './components/SlowQuery/SlowQuery.vue'
 import GCPIoT from './components/GCPIoT/GCPIoT.vue'
+import UsernameQuota from './components/UsernameQuota/UsernameQuota.vue'
 import TLSVersionSelect from '@/components/TLSVersionSelect.vue'
 import BinaryFileEditor from '@/components/BinaryFileEditor.vue'
-
 import Listeners from './components/Listeners'
 
 export default {
@@ -275,6 +280,7 @@ export default {
     TLSVersionSelect,
     GCPIoT,
     BinaryFileEditor,
+    UsernameQuota,
   },
 
   mixins: [handleMongoDBSRV('module')],
@@ -312,6 +318,7 @@ export default {
         slow_subscribers_statistics: 'subscribers',
         tracer: 'trace',
         gcp_device: 'devices',
+        username_quota: 'usage',
       },
       // canManageModuleTypes: [
       //   'mnesia_authentication',

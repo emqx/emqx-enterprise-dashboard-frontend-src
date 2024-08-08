@@ -141,4 +141,8 @@ export function queryNodeAuditLogs(node, params) {
   return http.get(`/nodes/${node}/audits`, { params })
 }
 
+export function queryUsernameQuotaUsage(params) {
+  return http.get(`/quota/usernames`, { params })
+}
+
 export default {}
