@@ -522,4 +522,12 @@ export default {
     zh: '指定过滤条件实时输出 DEBUG 级别日志，用于调试和排查错误。',
     en: 'Specify filter conditions to output DEBUG level logs in real-time for debugging and troubleshooting.',
   },
+  numberOfSessions: {
+    zh: '会话数',
+    en: 'Number of Sessions',
+  },
+  usage: {
+    zh: '使用详情',
+    en: 'Usage',
+  },
 }
