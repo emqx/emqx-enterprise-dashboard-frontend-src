@@ -145,4 +145,8 @@ export function queryUsernameQuotaUsage(params) {
   return http.get(`/quota/usernames`, { params })
 }
 
+export function searchUsernameQuotaUsage(id) {
+  return http.get(`/quota/usernames/${encodeURIComponent(id)}`, { params: { _m: false } })
+}
+
 export default {}
