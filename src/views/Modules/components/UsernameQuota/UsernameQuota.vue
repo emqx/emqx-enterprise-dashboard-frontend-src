@@ -14,7 +14,7 @@
     </div>
     <el-table :data="tableData">
       <el-table-column prop="username" :label="$t('Clients.username')" />
-      <el-table-column prop="used" :label="$t('Modules.numberOfSessions')">
+      <el-table-column prop="used" :label="$t('Overview.connectionNumber')">
         <template slot-scope="{ row }">
           {{ row.used }}
           <el-button size="mini" @click="viewDetail(row)">{{ $t('Overview.view') }}</el-button>
