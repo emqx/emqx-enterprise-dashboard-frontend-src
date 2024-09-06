@@ -3,7 +3,7 @@
     <div class="emq-table-header">
       <el-row class="search-bar" :gutter="20">
         <el-col :span="8">
-          <el-input v-model="filter" size="small" :placeholder="$t('Clients.clientId')" @keyup.enter.native="search" />
+          <el-input v-model="filter" size="small" :placeholder="$t('Clients.username')" @keyup.enter.native="search" />
         </el-col>
         <el-col :span="6">
           <el-button type="primary" size="small" @click="search">
@@ -110,6 +110,8 @@ export default {
         this.tableData = [data]
       } catch (error) {
         this.tableData = []
+      } finally {
+        this.params._count = this.tableData.length
       }
     },
     viewDetail(data) {
