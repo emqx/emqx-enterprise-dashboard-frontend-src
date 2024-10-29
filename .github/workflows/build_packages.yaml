@@ -27,7 +27,7 @@ jobs:
         echo "github_ref: $GITHUB_REF" >> dist/version
         echo "github_sha: $GITHUB_SHA" >> dist/version
         zip -rq emqx-dashboard.zip ./dist
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: emqx-dashboard
         path: dist/
