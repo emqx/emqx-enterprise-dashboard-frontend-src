@@ -25,14 +25,14 @@
           <el-col :span="24">
             <el-form-item :label="$t('Settings.currentNode')">
               <div v-for="(node, index) in currentNodes" :key="index">
-                <span :class="['join-status', node.joined ? 'is-join' : 'not-join']" :span="14">
+                <span :class="['running-status', node.isRunning ? 'is-running' : 'is-stopped']" :span="14">
                   {{ node.name }}
                 </span>
-                <a v-if="node.joined" class="node-oper" href="javascript:;" @click="toNodeDetails(node.name)">
+                <a v-if="node.isRunning" class="node-oper" href="javascript:;" @click="toNodeDetails(node.name)">
                   {{ $t('Overview.view') }}
                 </a>
                 <el-button
-                  v-if="node.joined && currentNodes.length > 1 && record.type === 'manual'"
+                  v-if="currentNodes.length > 1 && record.type === 'manual'"
                   :disabled="notAbleChange"
                   class="node-oper danger"
                   @click="removeNode(node.name)"
@@ -40,8 +40,8 @@
                   {{ $t('Settings.remove') }}
                 </el-button>
                 <!-- static -->
-                <span v-else-if="!node.joined && record.type === 'static'" class="not-join__desc">
-                  {{ $t('Settings.notJoined') }}
+                <span v-else-if="!node.isRunning" class="status-stopped__desc">
+                  {{ $t('Overview.stopped') }}
                 </span>
               </div>
             </el-form-item>
@@ -205,7 +205,7 @@ export default {
         { label: this.$t('Settings.etcd'), value: 'etcd' },
         { label: this.$t('Settings.k8s'), value: 'k8s' },
       ],
-      currentNodes: [], // [{ name: node, joined: true }]
+      currentNodes: [], // [{ name: node, isRunning: true }]
       descriptionDict: {},
     }
   },
@@ -219,8 +219,7 @@ export default {
       const res = await loadCluster()
       this.record = res
       const nodes = await loadNodes()
-      const seeds = this.record.config.seeds || []
-      this.currentNodes = this.getNodes(nodes, seeds)
+      this.currentNodes = this.getNodes(nodes)
     },
     async handleInviteNode() {
       const valid = await this.$refs.record.validate()
@@ -254,22 +253,10 @@ export default {
         })
         .catch(() => {})
     },
-    // Static 判断节点是否加入
-    getNodes(currentNodes, seeds) {
-      if (!seeds.length) {
-        return currentNodes.map((node) => ({ name: node, joined: true }))
-      }
-      const unique = (arr) => [...new Set(arr)]
-      const allNodes = [...currentNodes, ...seeds]
-      const diff = allNodes.filter((item) => allNodes.indexOf(item) === allNodes.lastIndexOf(item))
-      const uniqueNodes = unique(allNodes)
-
-      return uniqueNodes.map((node) => {
-        const data = { name: node, joined: true }
-        if (diff.includes(node)) {
-          data.joined = false
-        }
-        return data
+    getNodes(currentNodes) {
+      const runningReg = /running/i
+      return currentNodes.map((item) => {
+        return { name: item.node, isRunning: runningReg.test(item.status) }
       })
     },
   },
@@ -282,7 +269,7 @@ export default {
     margin: 0px;
   }
   .cluster-form {
-    .join-status {
+    .running-status {
       display: inline-block;
       min-width: 200px;
       &:not(.not-point)::before {
@@ -294,18 +281,18 @@ export default {
         border-radius: 4px;
         background-color: transparent;
       }
-      &.is-join {
+      &.is-running {
         &::before {
           background-color: #34c388;
         }
       }
-      &.not-join {
+      &.is-stopped {
         &::before {
           background-color: #afafaf;
         }
       }
     }
-    .not-join__desc {
+    .status-stopped__desc {
       color: #afafaf;
     }
     .node-oper {
