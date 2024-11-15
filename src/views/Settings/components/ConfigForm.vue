@@ -15,7 +15,10 @@
             <template slot="label">
               <span v-html="key === '' ? 'listener_on' : key"></span>
             </template>
-            <template v-if="deepRecord[key] === 'true' || deepRecord[key] === 'false'">
+            <template v-if="key === 'allow_anonymous' && allowAnonymousOptions">
+              <emq-select v-model="recordConfig[key]" :field="{ options: allowAnonymousOptions }"> </emq-select>
+            </template>
+            <template v-else-if="deepRecord[key] === 'true' || deepRecord[key] === 'false'">
               <emq-select v-model="recordConfig[key]" :field="{ options: boolOptions }"> </emq-select>
             </template>
 
@@ -124,6 +127,10 @@ export default {
       default: () => [],
     },
     qosOptions: {
+      type: Array,
+      default: () => [],
+    },
+    allowAnonymousOptions: {
       type: Array,
       default: () => [],
     },

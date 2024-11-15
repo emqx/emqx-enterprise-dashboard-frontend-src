@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { loadConfig, updateConfig } from '../../api/settings'
 import ConfigForm from './components/ConfigForm'
 import { allOptions } from '@/common/settingsData'
@@ -43,7 +44,12 @@ export default {
 
   computed: {
     allOptions() {
-      return allOptions
+      const ret = _.cloneDeep(allOptions)
+      ret.allowAnonymousOptions = [
+        ..._.cloneDeep(allOptions.boolOptions),
+        { label: 'false_quick_deny', value: 'false_quick_deny' },
+      ]
+      return ret
     },
   },
 
