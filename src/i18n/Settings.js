@@ -114,8 +114,8 @@ export default {
     en: 'The action when acl check reject current operation',
   },
   allow_anonymous: {
-    zh: '如果未加载身份验证插件，则默认情况下允许匿名身份验证。建议在生产部署中禁用该选项！',
-    en: 'Allow anonymous authentication by default if no auth plugins loaded. Disable the option in production deployment',
+    zh: '是否启用匿名认证，可能导致未知客户端成功登录，默认启用，建议在生产部署中禁用此选项！配置为 "false_quick_deny" 意味着快速拒绝匿名（没有用户名）的客户端，从而跳过认证后端的检查。',
+    en: 'Whether to enable anonymous authentication, it may cause unknown clients to login successfully. Enabled by default, it\'s recommended to disable this option in production deployment! Configured to "false_quick_deny" means quick deny of anonymous clients (without username). So the auth backend checks can be skipped.',
   },
   crl_cache_http_timeout: {
     zh: '获取 CRL 时 HTTP 请求的超时限制。该参数适用于所有启用了 CRL 检查的监听器。',
