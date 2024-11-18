@@ -3,8 +3,7 @@ import http from '@/common/http'
 // 加载节点
 export const loadNodes = async () => {
   const res = await http.get('/nodes')
-  const nodes = res.map(($) => $.node)
-  return nodes
+  return res
 }
 
 // 加载集群信息

@@ -256,7 +256,7 @@ export default {
     getNodes(currentNodes) {
       const runningReg = /running/i
       return currentNodes.map((item) => {
-        return { name: item.node, isRunning: runningReg.test(item.status) }
+        return { name: item.node, isRunning: runningReg.test(item.node_status) }
       })
     },
   },
