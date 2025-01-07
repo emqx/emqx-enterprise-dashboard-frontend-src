@@ -28,7 +28,20 @@
           <el-table-column prop="message" :label="$t('Alerts.alarmMsg')" min-width="140px">
             <template slot-scope="{ row }">
               <el-popover placement="top" trigger="hover" width="160" :open-delay="500" popper-class="detail-popover">
-                <div v-for="(value, label) in row.details" :key="label">{{ label }}: {{ value }}</div>
+                <template v-if="needDetailButton(row.details)">
+                  {{ getSlicedDetail(row.details) }}
+                  <el-button type="text" size="small" @click="showDetail(row.details)">
+                    {{ $t('Base.view') }}
+                  </el-button>
+                </template>
+                <template v-else>
+                  <template v-if="Array.isArray(row.details)">
+                    <div v-for="(value, label) in row.details" :key="label">{{ value }}</div>
+                  </template>
+                  <template v-else>
+                    <div v-for="(value, label) in row.details" :key="label">{{ label }}: {{ value }}</div>
+                  </template>
+                </template>
                 <span slot="reference" class="details">
                   <i class="iconfont icon-bangzhu"></i>
                 </span>
@@ -67,16 +80,33 @@
         </el-table>
       </a-card>
     </div>
+    <el-dialog custom-class="detail-dialog" width="520px" :title="$t('Base.view')" :visible.sync="dialogVisible">
+      <div class="monaco-container">
+        <Monaco disabled id="payload" v-model="currentViewDetail" lang="json" />
+      </div>
+
+      <div slot="footer" class="dialog-align-footer">
+        <el-button type="primary" size="small" :disabled="notAbleChange" @click="save">
+          {{ $t('Base.confirm') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { isObject } from 'lodash'
 import dateformat from 'dateformat'
 import { loadAlarm, loadHistoryAlarm, clearHistoryAlarm } from '@/api/common'
 import { getDateDiff } from '@/common/utils'
+import Monaco from '@/components/Monaco'
 
 export default {
   name: 'Alerts',
+
+  components: {
+    Monaco,
+  },
 
   data() {
     return {
@@ -87,6 +117,8 @@ export default {
       },
       tableData: [],
       alertType: 'present',
+      dialogVisible: false,
+      currentViewDetail: '',
     }
   },
 
@@ -134,6 +166,40 @@ export default {
         //
       }
     },
+    getSlicedDetail(detail) {
+      try {
+        let str = detail
+        if (isObject(detail)) {
+          str = JSON.stringify(detail)
+        }
+        return `${str.slice(0, 100)}...`
+      } catch (error) {
+        return detail
+      }
+    },
+    needDetailButton(detail) {
+      try {
+        let str = detail
+        if (isObject(detail)) {
+          str = JSON.stringify(detail)
+        }
+        return str.length > 100
+      } catch (error) {
+        return false
+      }
+    },
+    showDetail(detail) {
+      try {
+        let str = detail
+        if (isObject(detail)) {
+          str = JSON.stringify(detail, null, 2)
+        }
+        this.currentViewDetail = str
+        this.dialogVisible = true
+      } catch (error) {
+        //
+      }
+    },
   },
 }
 </script>
@@ -158,5 +224,11 @@ export default {
 <style lang="scss">
 .detail-popover {
   word-break: break-all;
+}
+
+.detail-dialog {
+  .monaco-container {
+    height: 400px;
+  }
 }
 </style>
