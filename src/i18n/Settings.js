@@ -530,4 +530,12 @@ export default {
     en: `After the hot configuration in EMQX is activated, for the configuration items included in the EMQX Dashboard, you can only modify the settings with Dashboard, <br />
 For the other configuration items, you can still modify with the configuration file and these changes will take effect after EMQX restarts.`,
   },
+  process_alarm_top_n: {
+    zh: `当触发告警时，在告警信息中包含前 N 个消息队列长度最长的进程，默认值为 5。`,
+    en: `When an alarm is triggered, the top N processes with the longest message queue length are included in the alarm information, the default value is 5.`,
+  },
+  process_long_msgq: {
+    zh: `当 EMQX 中有进程的邮箱超过此长度时触发告警，默认值为 80。`,
+    en: `Trigger an alarm when the mailbox of a process in EMQX exceeds this length, the default value is 80.`,
+  },
 }
