@@ -531,8 +531,8 @@ export default {
 For the other configuration items, you can still modify with the configuration file and these changes will take effect after EMQX restarts.`,
   },
   process_alarm_top_n: {
-    zh: `当触发告警时，在告警信息中包含前 N 个消息队列长度最长的进程，默认值为 5。`,
-    en: `When an alarm is triggered, the top N processes with the longest message queue length are included in the alarm information, the default value is 5.`,
+    zh: `当触发告警时，在告警中附带前 N 个消息队列长度最长且不为 0 的进程信息。默认值为 5。`,
+    en: `When an alarm is triggered, include the information of the top N processes with the longest non-zero message queues in the alarm. The default value is 5.`,
   },
   process_long_msgq: {
     zh: `当 EMQX 中有进程的邮箱超过此长度时触发告警，默认值为 80。`,
